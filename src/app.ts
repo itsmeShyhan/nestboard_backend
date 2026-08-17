@@ -26,7 +26,7 @@ export function buildApp(): Express {
   app.use(express.json({ limit: "1mb" }));
 
   const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
+    windowMs: env.RATE_LIMIT,
     limit: env.RATE_LIMIT,
     standardHeaders: true,
     legacyHeaders: false,
