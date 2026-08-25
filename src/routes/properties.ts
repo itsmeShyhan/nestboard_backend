@@ -36,6 +36,8 @@ function availabilityWindow(query: Record<string, unknown>) {
   const startMonth = query.startMonth;
   if (typeof startMonth === "string" && /^\d{4}-\d{2}$/.test(startMonth)) {
     const duration = parsePositiveInt(query.durationMonths, 1);
+    console.log(startMonth)
+    console.log(duration)
     return leaseRange(startMonth, duration);
   }
   const now = new Date();
@@ -384,6 +386,8 @@ propertiesRouter.get("/:id", optionalAuth, async (req, res, next) => {
     const roomIds = property.roomTypes.flatMap((rt) =>
       rt.rooms.map((room) => room.id),
     );
+
+   
     const window = availabilityWindow(req.query);
     const booked = await bookedSeatsByRoom(roomIds, window);
     const totalSeats = property.roomTypes.reduce(
@@ -391,8 +395,20 @@ propertiesRouter.get("/:id", optionalAuth, async (req, res, next) => {
       0,
     );
     const bookedSeats = [...booked.values()].reduce((a, b) => a + b, 0);
-
     const favorites = await favoritePropertyIds(req.user?.id, [property.id]);
+
+    console.log("This is property")
+ 
+    console.log(property.roomTypes[0]?.rooms)
+
+    console.log("THIS IS DTO")
+
+
+    console.log(toPropertyDetailDTO(
+        property,
+        Math.max(totalSeats - bookedSeats, 0),
+        favorites.has(property.id),
+      ))
 
     res.json(
       toPropertyDetailDTO(
@@ -482,6 +498,7 @@ propertiesRouter.get("/:id/room-types", async (req, res, next) => {
 propertiesRouter.get("/:id/room-types/:roomTypeId", async (req, res, next) => {
   try {
     const window = availabilityWindow(req.query);
+    console.log(activeBookingWhere(window.start, window.end))
     const roomType = await prisma.roomType.findFirst({
       where: {
         id: String(req.params.roomTypeId),
@@ -502,6 +519,16 @@ propertiesRouter.get("/:id/room-types/:roomTypeId", async (req, res, next) => {
       },
     });
     if (!roomType) throw Errors.notFound("Room type");
+
+    console.log(roomType.rooms[0])
+
+    let bookedSeats = 0
+    
+    roomType.rooms.map((e) => e.bookings.map((e) => {
+      e.tenant.displayName != "" ? bookedSeats += 1 : null
+    }))
+
+    console.log("booked seat: " + bookedSeats)
 
     const rooms = roomType.rooms.map((room) => {
       const tenantBySeat = new Map(
@@ -529,6 +556,7 @@ propertiesRouter.get("/:id/room-types/:roomTypeId", async (req, res, next) => {
       roomsCount: rooms.length,
       hasAC: roomType.hasAC,
       rooms,
+      bookedSeats: bookedSeats
     });
   } catch (err) {
     next(err);

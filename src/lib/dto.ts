@@ -1,6 +1,7 @@
 import type {
   Property as PrismaProperty,
   RoomType as PrismaRoomType,
+  RoomType,
 } from "../generated/client.js";
 import type { PropertyType } from "../generated/client.js";
 
@@ -74,6 +75,7 @@ export type PropertyDetailDTO = {
   minStay: string;
   cost: string;
   available_seats: number;
+  roomTypes: RoomType[]
 };
 
 export function toPropertyDetailDTO(
@@ -100,6 +102,7 @@ export function toPropertyDetailDTO(
     minStay: p.minStay,
     cost: minPrice !== null ? `LKR ${compactKilo(minPrice)}` : "-",
     available_seats: availableSeats,
+    roomTypes: p.roomTypes
   };
 }
 
