@@ -5,7 +5,7 @@ import { pinoHttp } from "pino-http";
 import { logger } from "./lib/logger.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { authRouter } from "./routes/auth.js";
-import helmet from "helmet";
+import {default as helmet} from "helmet";
 import cors from "cors";
 import { corsOrigins, env } from "./lib/env.js";
 import { bookingsRouter } from "./routes/bookings.js";
