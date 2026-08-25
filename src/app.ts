@@ -13,7 +13,8 @@ import { bookingsRouter } from "./routes/bookings.js";
 import { uploadsRouter } from "./routes/uploads.js";
 import path from "node:path";
 import {rateLimit} from "express-rate-limit";
-import helmet = require('helmet');
+// import helmet = require('helmet');
+import helmet from "helmet";
 
 export function buildApp(): Express {
 
@@ -26,7 +27,7 @@ export function buildApp(): Express {
 
   app.use(pinoHttp({ logger }));
 
-  app.use(helmet.default());
+  app.use(helmet());
   app.use(cors({ origin: corsOrigins, credentials: false }));
   app.use(express.json({ limit: "1mb" }));
 
