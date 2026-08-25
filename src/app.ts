@@ -5,7 +5,7 @@ import { pinoHttp } from "pino-http";
 import { logger } from "./lib/logger.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { authRouter } from "./routes/auth.js";
-import {default as helmet} from "helmet";
+import * as helmetModule from "helmet";
 import cors from "cors";
 import { corsOrigins, env } from "./lib/env.js";
 import { bookingsRouter } from "./routes/bookings.js";
@@ -14,6 +14,8 @@ import path from "node:path";
 import {rateLimit} from "express-rate-limit";
 
 export function buildApp(): Express {
+
+  const helmet = helmetModule.default;
   const app = express();
 
   // behind a reverse proxy; express-rate-limit and req.ip need X-Forwarded-For honored
