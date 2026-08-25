@@ -8,7 +8,7 @@ const envSchema = z
     LOG_LEVEL: z.string().default("info"),
     DATABASE_URL: z.url(),
     JWT_ACCESS_SECRET: z.string().min(32),
-    CORS_ORIGINS: z.string().default("http://localhost:5173"),
+    CORS_ORIGINS: z.string().default("http://localhost:5173, https://nestboard-frontend-nv0l7i9xq-shyhan-wahabs-projects.vercel.app"),
     UPLOAD_PROVIDER: z.enum(["local", "r2"]).default("local"),
     UPLOAD_LOCAL_DIR: z.string().default("./uploads"),
     RATE_LIMIT: z.coerce.number().int().positive().default(100),
